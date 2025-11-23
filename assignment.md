@@ -36,7 +36,21 @@ def parse_and_extract_rows(soup: BeautifulSoup):
 Answer:
 
 ```python
+rows = []
+page = 1
+r = requests.get(f"https://www.scrapethissite.com/pages/forms/?page_num={page}")
+soup = BeautifulSoup(r.text, "html.parser")
+for row_dict in parse_and_extract_rows(soup):
+    rows.append(row_dict)
 
+while soup.find("a", {"aria-label": "Next"}):
+    page += 1
+    r = requests.get(f"https://www.scrapethissite.com/pages/forms/?page_num={page}")
+    soup = BeautifulSoup(r.text, "html.parser")
+    for row_dict in parse_and_extract_rows(soup):
+        rows.append(row_dict)
+    # pause for 1 second between requests
+    time.sleep(1)
 ```
 
 ## Submission
